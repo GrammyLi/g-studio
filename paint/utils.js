@@ -7,6 +7,6 @@ const log = debug
 
 const int = (number) => parseInt(number, 10);
 
-const bindEvent = (el, name, cb) => {
-  el.addEventListener(name, cb)
+const bindEvent = (element, eventName, callback) => {
+  element.addEventListener(eventName, callback)
 }
