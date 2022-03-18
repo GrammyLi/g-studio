@@ -5,7 +5,6 @@ const updateCanvasOption = () => {
 };
 
 const init = () => {
-  // mdn canvas
   window.canvas = e("#canvas");
   window.ctx = canvas.getContext("2d");
   // 设置画布宽高
@@ -22,7 +21,6 @@ const init = () => {
 
 const bindEventMove = () => {
   bindEvent(canvas, "mousemove", (event) => {
-    // log('event', event)
     const x = event.offsetX;
     const y = event.offsetY;
     if (painting) {
@@ -55,45 +53,29 @@ const bindEventLeave = () => {
   });
 };
 
-const bindEventPenThickness = () => {
-  const bar = e(".thickness-bar");
-  bindEvent(bar, "click", (event) => {
+const bindEventPen = () => {
+  bindAll(es('.bar'), 'click', event => {
     let target = event.target;
-    let className = "thickness";
+    let bar = target.closest('.bar')
+    let type = bar.dataset.type
     let active = "active";
-    if (target.classList.contains(className)) {
+    if (target.classList.contains(type)) {
       // 删除旧的
       let sel = `.${active}`;
       let activeEle = bar.querySelector(sel);
       activeEle.classList.toggle(active);
       // 添加新的
       target.classList.toggle(active);
-      let thickness = target.dataset.thickness;
-      log('thickness', typeof thickness, thickness)
-      penThickness = int(thickness);
+      let value = target.dataset[type];
+      log('value', value)
+      if (type === 'thickness') {
+        penThickness = int(value);
+      } else {
+        penColor = value
+      }      
       updateCanvasOption();
     }
-  });
-};
-
-const bindEventPenColor = () => {
-  const bar = e(".color-bar");
-  bindEvent(bar, "click", (event) => {
-    let target = event.target;
-    let className = "color";
-    let active = "active";
-    if (target.classList.contains(className)) {
-      // 删除旧的
-      let sel = `.${active}`;
-      let activeEle = bar.querySelector(sel);
-      activeEle.classList.toggle(active);
-      // 添加新的
-      target.classList.toggle(active);
-      let color = target.dataset.color;
-      penColor = color;
-      updateCanvasOption();
-    }
-  });
+  })
 };
 
 const bindEventClear = () => {
@@ -112,8 +94,7 @@ const bindEvents = () => {
   bindEventDown();
   bindEventUp();
   bindEventLeave();
-  bindEventPenColor();
-  bindEventPenThickness();
+  bindEventPen();
   bindEventClear();
 };
 

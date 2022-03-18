@@ -4,8 +4,45 @@ const updateCanvasOption = () => {
   ctx.lineWidth = penThickness;
 };
 
+const templateColors = () => {
+  let r = "";
+  for (let i = 0; i < colors.length; i++) {
+    let t = colors[i];
+    let className = i === currentColor ? "active" : "";
+    r += `<div class="color ${className}" data-color="${t}"></div>`;
+  }
+  return r;
+};
+
+const insertOptionColor = () => {
+  const t = templateColors();
+  appendHtml(e(".color-bar"), t);
+};
+
+const templateThicknessArr = () => {
+  let r = "";
+  for (let i = 0; i < thicknessList.length; i++) {
+    let t = thicknessList[i];
+    let className = "";
+    if (i == currentThickness) {
+      className = "active";
+    }
+    r += `<div class="thickness ${className}" data-thickness="${t}"></div>`;
+  }
+  return r;
+};
+
+const insertOptionThickness = () => {
+  const t = templateThicknessArr();
+  appendHtml(e(".thickness-bar"), t);
+};
+
+const insertOption = () => {
+  insertOptionColor();
+  insertOptionThickness();
+};
+
 const init = () => {
-  // mdn canvas
   window.canvas = e("#canvas");
   window.ctx = canvas.getContext("2d");
   // 设置画布宽高
@@ -17,12 +54,19 @@ const init = () => {
   window.penThickness = 4;
   // 是否画
   window.painting = false;
+
+  window.colors = ["#9b59b6", "#3498db", "black", "red", "pink"];
+  window.currentColor = 0;
+
+  window.thicknessList = [4, 8, 18, 24];
+  window.currentThickness = 0;
+
+  insertOption();
   updateCanvasOption();
 };
 
 const bindEventMove = () => {
   bindEvent(canvas, "mousemove", (event) => {
-    // log('event', event)
     const x = event.offsetX;
     const y = event.offsetY;
     if (painting) {
@@ -55,42 +99,26 @@ const bindEventLeave = () => {
   });
 };
 
-const bindEventPenThickness = () => {
-  const bar = e(".thickness-bar");
-  bindEvent(bar, "click", (event) => {
+const bindEventPen = () => {
+  bindAll(es(".bar"), "click", (event) => {
     let target = event.target;
-    let className = "thickness";
+    let bar = target.closest(".bar");
+    let type = bar.dataset.type;
     let active = "active";
-    if (target.classList.contains(className)) {
+    if (target.classList.contains(type)) {
       // 删除旧的
       let sel = `.${active}`;
       let activeEle = bar.querySelector(sel);
       activeEle.classList.toggle(active);
       // 添加新的
       target.classList.toggle(active);
-      let thickness = target.dataset.thickness;
-      log('thickness', typeof thickness, thickness)
-      penThickness = int(thickness);
-      updateCanvasOption();
-    }
-  });
-};
-
-const bindEventPenColor = () => {
-  const bar = e(".color-bar");
-  bindEvent(bar, "click", (event) => {
-    let target = event.target;
-    let className = "color";
-    let active = "active";
-    if (target.classList.contains(className)) {
-      // 删除旧的
-      let sel = `.${active}`;
-      let activeEle = bar.querySelector(sel);
-      activeEle.classList.toggle(active);
-      // 添加新的
-      target.classList.toggle(active);
-      let color = target.dataset.color;
-      penColor = color;
+      let value = target.dataset[type];
+      log("value", value);
+      if (type === "thickness") {
+        penThickness = int(value);
+      } else {
+        penColor = value;
+      }
       updateCanvasOption();
     }
   });
@@ -112,8 +140,7 @@ const bindEvents = () => {
   bindEventDown();
   bindEventUp();
   bindEventLeave();
-  bindEventPenColor();
-  bindEventPenThickness();
+  bindEventPen();
   bindEventClear();
 };
 
