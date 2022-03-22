@@ -41,6 +41,7 @@ const appendHtml = (element, html) => {
 }
 
 const e = (selector) => {
+  // #id-html
   return document.querySelector(selector)
 }
 

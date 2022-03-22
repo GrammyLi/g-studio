@@ -37,3 +37,6 @@ const code = `/*  你好，我叫康米娜，
     border-radius:50%;
     background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 25%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 100%, rgba(0,0,0,1) 100%);
 }`;
+
+const 模板字符 = `woui `
+const 普通的字符 = 'woui'
